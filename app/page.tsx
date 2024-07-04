@@ -1,6 +1,6 @@
 "use client";
 
-import type { NextPage } from "next";
+import { NextPage } from "next";
 import Head from "next/head";
 import NewsList from "./components/NewsList";
 
@@ -8,15 +8,14 @@ const Home: NextPage = () => {
   return (
     <div>
       <Head>
-        <title>Hacker News Clone</title>
+        <title>hacker news clone</title>
         <meta
           name="description"
-          content="A modern and minimalistic clone of Hacker News using Next.js, TypeScript, and Tailwind CSS"
+          content="a modern and minimalistic clone of hacker news using next.js, typescript, and tailwind css"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main className="min-h-screen">
+      <main className="min-h-screen bg-background-start-rgb text-foreground-rgb">
         <NewsList />
       </main>
     </div>

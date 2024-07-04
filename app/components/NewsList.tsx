@@ -1,33 +1,42 @@
+import useFetchStories from "../hooks/useFetchStories";
 import { useState, useEffect } from "react";
 
-type Story = {
-  objectID: string;
-  title: string;
-  url: string;
-  points: number;
-  author: string;
-  created_at: string;
-};
-
 const NewsList: React.FC = () => {
-  const [stories, setStories] = useState<Story[]>([]);
+  const { stories, loading, fetchMoreStories } = useFetchStories();
+  const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
-    fetch("http://hn.algolia.com/api/v1/search?query=foo&tags=story")
-      .then((response) => response.json())
-      .then((data) => setStories(data.hits));
-  }, []);
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop !==
+          document.documentElement.offsetHeight ||
+        isFetching
+      ) {
+        return;
+      }
+      setIsFetching(true);
+      fetchMoreStories();
+      setIsFetching(false);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isFetching, fetchMoreStories]);
+
+  if (loading) {
+    return <div className="text-center">loading...</div>;
+  }
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">
+      <h1 className="text-2xl font-bold mb-4 text-left">
         <a
           href="https://news.ycombinator.com/"
           target="_blank"
           rel="noopener noreferrer"
           className="hover:text-gray-500"
         >
-          Hacker News
+          hacker news
         </a>
       </h1>
       <ul>
@@ -48,6 +57,9 @@ const NewsList: React.FC = () => {
           </li>
         ))}
       </ul>
+      {isFetching && (
+        <div className="text-center mt-4">loading more articles...</div>
+      )}
     </div>
   );
 };
